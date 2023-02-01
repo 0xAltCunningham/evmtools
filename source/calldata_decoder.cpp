@@ -94,7 +94,7 @@ namespace evmtools {
       // - PC of offset (e.g.2nd param)
       // - Offset value (e.g. 0x40)
       // - Length       (e.g. 0x02); Default 0 until we reach the offset
-      using Offset = std::tuple<size_t, intx::uint128, size_t>;
+      using Offset = std::tuple<size_t, intx::uint256, size_t>;
       std::vector<Offset> offsets;  // pc of offset + offset
 
       while (i != this->raw_params.size()) {
@@ -106,6 +106,7 @@ namespace evmtools {
         auto& params_vec{std::get<0>(params)};
         if (params_vec.at(i) == constants::EMPTY_32) {
           params_vec = pad_chunk_left(params_vec, i);
+          i++;
         }
 
         auto& raw_param{params_vec.at(i)};
@@ -120,8 +121,7 @@ namespace evmtools {
           // Check if last param was a length type.
           // They indicate the start of a dynamic type (string, bytes, or array).
           if (auto last = previous_chunk(params_vec, i)) {
-            auto last_trimmed{trim_zeroes(*last)};
-            intx::uint128 value{uint_from_hex_str<128>(last_trimmed)};
+            intx::uint256 value{uint_from_hex_str<256>(*last)};
             // Extract selector + params.
             if (auto skip = this->parse_len(params_vec, i, size_t(value))) {
               auto rearranged{rearrange_chunks(params_vec, i, std::get<1>(parsed))};
@@ -137,11 +137,11 @@ namespace evmtools {
         // Therefore, we check common offset/length sizes.
         else if (trimmed.size() <= 4) {
           // Check if value is for dynamic type.
-          intx::uint128 value{uint_from_hex_str<128>(trimmed)};
+          intx::uint256 value{uint_from_hex_str<256>(raw_param)};
           // Check if offset by checking if
           // - below safety net length, since they probably wont go that high.
           // - divisible by 32 bytes (0x20).
-          if (value < intx::uint128{i * 64 + 1920} && value % 64 == intx::uint128{0}) {
+          if (value < intx::uint256{i * 64 + 1920} && value % 64 == intx::uint256{0}) {
             offsets.push_back(std::make_tuple(i, value / 64, 0));
           }
         }
@@ -214,7 +214,7 @@ namespace evmtools {
     std::vector<std::string> pad_chunk_left(std::vector<std::string> chunks, size_t chunk_index) {
       chunks[chunk_index] = std::string{constants::EMPTY_4} + chunks[chunk_index];
 
-      chunks[chunk_index].erase(56);
+      chunks[chunks.size() - 1].erase(56);
 
       return split_calldata(join_strings(chunks), 64);
     }
