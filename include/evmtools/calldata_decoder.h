@@ -1,6 +1,8 @@
 #pragma once
 
 #include <intx/intx.hpp>
+#include <iostream>
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -91,6 +93,8 @@ namespace evmtools {
       std::string calldata;
       // Method selector being targeted.
       std::string selector;
+      // Param types for our method.
+      Params main_details;
       // The params found after selector is sliced out.
       std::vector<std::string> raw_params;
       std::vector<std::string> params;
@@ -278,30 +282,38 @@ namespace evmtools {
       return trimmed;
     }
 
+    /**
+     * @brief Converts Types enum values to strings
+     *
+     * @param out std::ostream& to write to
+     * @param value Types enum value
+     * @return std::ostream& to allow chaining
+     */
+    [[nodiscard]] inline std::ostream& operator<<(std::ostream& out, const Types value) noexcept {
+      static std::map<Types, std::string> strings;
+      if (strings.size() == 0) {
+#define INSERT_ELEMENT(p) strings[p] = #p
+        INSERT_ELEMENT(Types::AnyZero);
+        INSERT_ELEMENT(Types::AnyMax);
+        INSERT_ELEMENT(Types::Uint);
+        INSERT_ELEMENT(Types::Int);
+        INSERT_ELEMENT(Types::Bytes);
+        INSERT_ELEMENT(Types::Bool);
+        INSERT_ELEMENT(Types::Uint8);
+        INSERT_ELEMENT(Types::Bytes1);
+        INSERT_ELEMENT(Types::Bytes20);
+        INSERT_ELEMENT(Types::Address);
+        INSERT_ELEMENT(Types::Selector);
+        INSERT_ELEMENT(Types::String);
+        INSERT_ELEMENT(Types::Address0);
+        INSERT_ELEMENT(Types::ZeroUint);
+        INSERT_ELEMENT(Types::MaxUint128);
+#undef INSERT_ELEMENT
+      }
+
+      return out << strings[value];
+    }
+
   }  // namespace calldata_decoder
 
 }  // namespace evmtools
-
-//    /**  Language codes to be used with the Greeter class */
-// enum class LanguageCode { EN, DE, ES, FR };
-
-// /**
-//  * @brief A class for saying hello in multiple languages
-//  */
-// class Greeter {
-//   std::string name;
-
-// public:
-//   /**
-//    * @brief Creates a new greeter
-//    * @param name the name to greet
-//    */
-//   Greeter(std::string name);
-
-//   /**
-//    * @brief Creates a localized string containing the greeting
-//    * @param lang the language to greet in
-//    * @return a string containing the greeting
-//    */
-//   std::string greet(LanguageCode lang = LanguageCode::EN) const;
-// };
