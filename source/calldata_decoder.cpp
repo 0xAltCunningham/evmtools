@@ -166,6 +166,17 @@ namespace evmtools {
           params.param_types = types;
         }
       }
+      // Else, our main method doesn't call anything else.
+      else {
+        std::vector<ParamTypes> types;
+
+        for (auto param : this->params) {
+          auto param_types{get_param_type(param)};
+          types.push_back(param_types);
+        }
+
+        this->main_details.param_types = types;
+      }
     }
 
     std::optional<size_t> Calldata::parse_len(const std::vector<std::string>& params_64,
@@ -282,8 +293,6 @@ namespace evmtools {
       // Ints replace 0s with 1s in bitwise
       if (chunks.at(0) == constants::MASK_4) {
         return ParamTypes{Types::Int};
-      } else {
-        return ParamTypes{Types::Int, Types::String, Types::Bytes};
       }
 
       // Check if we found an address:
