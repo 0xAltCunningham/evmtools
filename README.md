@@ -1,15 +1,15 @@
-[![Actions Status](https://github.com/TheLartians/ModernCppStarter/workflows/MacOS/badge.svg)](https://github.com/TheLartians/ModernCppStarter/actions)
-[![Actions Status](https://github.com/TheLartians/ModernCppStarter/workflows/Windows/badge.svg)](https://github.com/TheLartians/ModernCppStarter/actions)
-[![Actions Status](https://github.com/TheLartians/ModernCppStarter/workflows/Ubuntu/badge.svg)](https://github.com/TheLartians/ModernCppStarter/actions)
-[![Actions Status](https://github.com/TheLartians/ModernCppStarter/workflows/Style/badge.svg)](https://github.com/TheLartians/ModernCppStarter/actions)
-[![Actions Status](https://github.com/TheLartians/ModernCppStarter/workflows/Install/badge.svg)](https://github.com/TheLartians/ModernCppStarter/actions)
-[![codecov](https://codecov.io/gh/TheLartians/ModernCppStarter/branch/master/graph/badge.svg)](https://codecov.io/gh/TheLartians/ModernCppStarter)
+[![Actions Status](https://github.com/0xAltCunningham/evmtools/workflows/MacOS/badge.svg)](https://github.com/0xAltCunningham/evmtools/actions)
+[![Actions Status](https://github.com/0xAltCunningham/evmtools/workflows/Windows/badge.svg)](https://github.com/0xAltCunningham/evmtools/actions)
+[![Actions Status](https://github.com/0xAltCunningham/evmtools/workflows/Ubuntu/badge.svg)](https://github.com/0xAltCunningham/evmtools/actions)
+[![Actions Status](https://github.com/0xAltCunningham/evmtools/workflows/Style/badge.svg)](https://github.com/0xAltCunningham/evmtools/actions)
+[![Actions Status](https://github.com/0xAltCunningham/evmtools/workflows/Install/badge.svg)](https://github.com/0xAltCunningham/evmtools/actions)
+[![codecov](https://codecov.io/gh/0xAltCunningham/evmtools/branch/master/graph/badge.svg)](https://codecov.io/gh/0xAltCunningham/evmtools)
 
 <p align="center">
-  <img src="https://repository-images.githubusercontent.com/254842585/4dfa7580-7ffb-11ea-99d0-46b8fe2f4170" height="175" width="auto" />
+  <img src="https://user-images.githubusercontent.com/112350064/219449735-85b3192a-13ca-4d0c-ba3b-6c48dca50345.png" height="175" width="auto" />
 </p>
 
-# ModernCppStarter
+# EvmTools
 
 Setting up a new C++ project usually requires a significant amount of preparation and boilerplate code, even more so for modern C++ projects with tests, executables and continuous integration.
 This template is the result of learnings from many previous projects and should help reduce the work required to setup up a modern C++ project.
@@ -44,7 +44,7 @@ This template is the result of learnings from many previous projects and should 
 Eventually, you can remove any unused files, such as the standalone directory or irrelevant github workflows for your project.
 Feel free to replace the License with one suited for your project.
 
-To cleanly separate the library and subproject code, the outer `CMakeList.txt` only defines the library itself while the tests and other subprojects are self-contained in their own directories. 
+To cleanly separate the library and subproject code, the outer `CMakeList.txt` only defines the library itself while the tests and other subprojects are self-contained in their own directories.
 During development it is usually convenient to [build all subprojects at once](#build-everything-at-once).
 
 ### Build and run the standalone target
@@ -66,7 +66,7 @@ cmake -S test -B build/test
 cmake --build build/test
 CTEST_OUTPUT_ON_FAILURE=1 cmake --build build/test --target test
 
-# or simply call the executable: 
+# or simply call the executable:
 ./build/test/GreeterTests
 ```
 
@@ -167,7 +167,7 @@ Use this as the main directory for best IDE support.
 > I see you are using `GLOB` to add source files in CMakeLists.txt. Isn't that evil?
 
 Glob is considered bad because any changes to the source file structure [might not be automatically caught](https://cmake.org/cmake/help/latest/command/file.html#filesystem) by CMake's builders and you will need to manually invoke CMake on changes.
-  I personally prefer the `GLOB` solution for its simplicity, but feel free to change it to explicitly listing sources.
+I personally prefer the `GLOB` solution for its simplicity, but feel free to change it to explicitly listing sources.
 
 > I want create additional targets that depend on my library. Should I modify the main CMakeLists to include them?
 
