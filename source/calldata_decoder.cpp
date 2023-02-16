@@ -116,10 +116,10 @@ namespace evmtools {
 
         // Check if param has selector in it.
         auto parsed{try_parse_selector(raw_param)};
-        auto selector{std::get<0>(parsed)};
+        auto parsed_selector{std::get<0>(parsed)};
 
         // If selector found.
-        if (selector != constants::EMPTY_4 && selector != constants::MASK_4) {
+        if (parsed_selector != constants::EMPTY_4 && parsed_selector != constants::MASK_4) {
           // Check if last param was a length type.
           // They indicate the start of a dynamic type (string, bytes, or array).
           if (auto last = previous_chunk(params_vec, i)) {
@@ -184,8 +184,8 @@ namespace evmtools {
     std::optional<size_t> Calldata::parse_len(const std::vector<std::string>& params_64,
                                               size_t from, size_t len) {
       auto relevant_params{std::vector<std::string>{params_64.begin() + from, params_64.end()}};
-      auto calldata{join_strings(relevant_params)};
-      auto cut{calldata.substr(0, len * 2)};
+      auto relevant_calldata{join_strings(relevant_params)};
+      auto cut{relevant_calldata.substr(0, len * 2)};
       size_t remainder{(len * 2) % 64};
 
       // If remainder is 8, we know it's a function.
