@@ -26,8 +26,8 @@ CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 
 CPMAddPackage(
   NAME intx
-  GIT_TAG v0.9.0
-  GITHUB_REPOSITORY chfast/intx
+  GIT_TAG master
+  GITHUB_REPOSITORY 0xAltCunningham/intx
   OPTIONS "INTX_INSTALL YES" # create an installable target
 )
 
