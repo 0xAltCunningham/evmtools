@@ -5,7 +5,7 @@ project(EvmToolsDocs)
 # ---- Dependencies ----
 include(../cmake/CPM.cmake)
 
-CPMAddPackage("gh:mosra/m.css#a0d292ec311b97fefd21e93cdefb60f88d19ede6")
+CPMAddPackage("gh:marzer/m.css#860c3cbfe755f25aa855e68949e0c8044327bbde")
 CPMAddPackage(NAME EvmTools SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
 # ---- Doxygen variables ----
