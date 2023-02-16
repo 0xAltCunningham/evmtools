@@ -65,27 +65,29 @@ namespace evmtools {
         // Remove the first 4 chunks.
         chunks.erase(chunks.begin(), chunks.begin() + 4);
 
-        std::vector<std::string> params{""};
+        // Create a new vector for the params, without the selector.
+        std::vector<std::string> param_list{""};
+
         for (auto chunk : chunks) {
-          auto len{params.size() - 1};
+          auto len{param_list.size() - 1};
           // Check if we have the param.
-          if (params.at(len).size() == 64) {
+          if (param_list.at(len).size() == 64) {
             // Add new param.
-            params.push_back("");
+            param_list.push_back("");
             // Make sure we're pushing to new param.
             len++;
           }
-          params.at(len).append(chunk);
+          param_list.at(len).append(chunk);
         }
 
-        this->raw_params = params;
+        this->raw_params = param_list;
       }
     }
 
     void Calldata::parse_raw_params() {
       size_t i{0};
       size_t skipping{0};
-      std::tuple<std::vector<std::string>, bool> params{
+      std::tuple<std::vector<std::string>, bool> params_to_parse{
           std::make_tuple(std::vector<std::string>{this->raw_params}, false)};
 
       // TODO...CREATE OFFSET STRUCT
@@ -103,7 +105,7 @@ namespace evmtools {
           skipping = 0;
         }
 
-        auto& params_vec{std::get<0>(params)};
+        auto& params_vec{std::get<0>(params_to_parse)};
         if (params_vec.at(i) == constants::EMPTY_32) {
           params_vec = pad_chunk_left(params_vec, i);
           i++;
@@ -125,7 +127,7 @@ namespace evmtools {
             // Extract selector + params.
             if (auto skip = this->parse_len(params_vec, i, size_t(value))) {
               auto rearranged{rearrange_chunks(params_vec, i, std::get<1>(parsed))};
-              params = std::make_tuple(std::get<0>(rearranged), true);
+              params_to_parse = std::make_tuple(std::get<0>(rearranged), true);
 
               // How many chars we skip next loop.
               skipping = *skip;
@@ -149,21 +151,21 @@ namespace evmtools {
         i++;
       }
 
-      this->params = std::get<0>(params);
+      this->params = std::get<0>(params_to_parse);
     }
 
     void Calldata::get_param_types() {
       // If our main method calls other methods:
       if (this->nested_details.size() > 0) {
-        for (auto& params : this->nested_details) {
+        for (auto& nested_params : this->nested_details) {
           std::vector<ParamTypes> types;
 
-          for (auto param : params.params) {
+          for (auto param : nested_params.params) {
             auto param_types{get_param_type(param)};
             types.push_back(param_types);
           }
 
-          params.param_types = types;
+          nested_params.param_types = types;
         }
       }
       // Else, our main method doesn't call anything else.
@@ -181,8 +183,8 @@ namespace evmtools {
 
     std::optional<size_t> Calldata::parse_len(const std::vector<std::string>& params_64,
                                               size_t from, size_t len) {
-      auto params{std::vector<std::string>{params_64.begin() + from, params_64.end()}};
-      auto calldata{join_strings(params)};
+      auto relevant_params{std::vector<std::string>{params_64.begin() + from, params_64.end()}};
+      auto calldata{join_strings(relevant_params)};
       auto cut{calldata.substr(0, len * 2)};
       size_t remainder{(len * 2) % 64};
 
